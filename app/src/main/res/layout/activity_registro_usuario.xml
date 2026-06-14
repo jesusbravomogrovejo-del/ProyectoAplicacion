@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="32dp"
+    android:gravity="center"
+    android:background="#121212"> <ImageView
+    android:layout_width="120dp"
+    android:layout_height="120dp"
+    android:src="@drawable/logo"
+    android:layout_marginBottom="16dp"
+    android:scaleType="fitCenter"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nuevo Usuario"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registra tus credenciales de acceso"
+        android:textColor="#A0A0A0"
+        android:textSize="14sp"
+        android:layout_marginBottom="40dp"
+        android:textAlignment="center"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre de Usuario"
+            android:textColor="#E0E0E0"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp"/>
+
+        <EditText
+            android:id="@+id/etNuevoUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="#2A2A2A"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#757575"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:hint="Elige un usuario" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="32dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contraseña"
+            android:textColor="#E0E0E0"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp"/>
+
+        <EditText
+            android:id="@+id/etNuevaPassword"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="#2A2A2A"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#757575"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:hint="Crea una contraseña"
+            android:inputType="textPassword" />
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCrearUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="GUARDAR USUARIO"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:backgroundTint="#4CAF50"
+        app:cornerRadius="8dp"/>
+
+</LinearLayout>

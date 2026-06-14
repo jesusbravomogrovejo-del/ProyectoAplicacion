@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="32dp"
+    android:gravity="center"
+    android:background="#121212"> <!-- Fondo Oscuro -->
+
+    <!-- Título / Logo de la App -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Minimarket\nLos Andes"
+        android:textColor="#FFFFFF"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Inicia sesión para continuar"
+        android:textColor="#A0A0A0"
+        android:textSize="14sp"
+        android:layout_marginBottom="40dp"/>
+
+    <!-- Etiqueta y Campo de Usuario -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Usuario"
+            android:textColor="#E0E0E0"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp"/>
+
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="#2A2A2A"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#757575"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:hint="Ej: admin" />
+    </LinearLayout>
+
+    <!-- Etiqueta y Campo de Contraseña -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="32dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contraseña"
+            android:textColor="#E0E0E0"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp"/>
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="#2A2A2A"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#757575"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:hint="••••••••"
+            android:inputType="textPassword" />
+    </LinearLayout>
+
+    <!-- Botón Principal: Ingresar -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="INGRESAR"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:backgroundTint="#1976D2"
+        app:cornerRadius="8dp"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Botón Secundario: Registrarse -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnIrRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="CREAR NUEVA CUENTA"
+        android:textColor="#A0A0A0"
+        android:textStyle="bold"
+        app:backgroundTint="#333333"
+        app:cornerRadius="8dp"/>
+
+</LinearLayout>

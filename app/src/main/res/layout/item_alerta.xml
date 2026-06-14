@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:background="#262626"> <ImageView
+    android:id="@+id/ivIconoAlerta"
+    android:layout_width="32dp"
+    android:layout_height="32dp"
+    android:src="@android:drawable/ic_dialog_alert"
+    android:layout_marginEnd="16dp"
+    android:layout_gravity="center_vertical"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvTituloAlerta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¡Atención!"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tvMensajeAlerta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cargando mensaje..."
+            android:textColor="#B0B0B0"
+            android:textSize="14sp"
+            android:layout_marginTop="6dp"/>
+    </LinearLayout>
+</LinearLayout>
