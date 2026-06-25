@@ -1,5 +1,4 @@
 package com.example.proyectoaplicacion;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,9 +8,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-
     private static final String DATABASE_NAME = "Minimarket.db";
-    private static final int DATABASE_VERSION = 2; // Subimos la versión por los cambios
+    private static final int DATABASE_VERSION = 3; // Version 3 para soportar multicuenta
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -22,19 +20,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Tabla Usuarios
         db.execSQL("CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)");
 
-        // Usuario por defecto (admin, 12345) guardado ya con SHA-256
+        // Usuario por defecto
         String defaultPassword = hashPassword("12345");
         db.execSQL("INSERT INTO users (username, password) VALUES ('admin', '" + defaultPassword + "')");
 
-        // Tabla Productos (AHORA CON EL CAMPO CANTIDAD AL FINAL)
+        // Tabla Productos con el nuevo campo user_id
         db.execSQL("CREATE TABLE products (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "user_id INTEGER, " +
                 "nombre TEXT, " +
                 "categoria TEXT, " +
                 "lote TEXT, " +
                 "fecha_caducidad TEXT, " +
                 "ubicacion TEXT, " +
-                "cantidad INTEGER)"); // <-- CAMPO NUEVO
+                "cantidad INTEGER)");
     }
 
     @Override
@@ -44,7 +43,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // --- SEGURIDAD: MÉTODO SHA-256 ---
     public static String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -61,35 +59,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // --- MÉTODOS DE USUARIO ---
     public boolean insertUser(String username, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("username", username);
-        contentValues.put("password", hashPassword(password)); // Se encripta antes de guardar
+        contentValues.put("password", hashPassword(password));
         long result = db.insert("users", null, contentValues);
         return result != -1;
     }
 
-    public boolean checkUser(String username, String password) {
+    // Ahora devuelve el ID del usuario en lugar de boolean
+    public int checkUser(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String encryptedPassword = hashPassword(password); // Se encripta para comparar con la BD
-        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE username = ? AND password = ?", new String[]{username, encryptedPassword});
-        boolean exists = cursor.getCount() > 0;
+        String encryptedPassword = hashPassword(password);
+        Cursor cursor = db.rawQuery("SELECT id FROM users WHERE username = ? AND password = ?", new String[]{username, encryptedPassword});
+
+        int userId = -1;
+        if (cursor.moveToFirst()) {
+            userId = cursor.getInt(0);
+        }
         cursor.close();
-        return exists;
+        return userId;
     }
 
-    // --- MÉTODOS DE PRODUCTO ---
-    public boolean insertProduct(String nombre, String categoria, String lote, String fecha, String ubicacion, int cantidad) {
+    // Recibe el userId
+    public boolean insertProduct(int userId, String nombre, String categoria, String lote, String fecha, String ubicacion, int cantidad) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put("user_id", userId);
         contentValues.put("nombre", nombre);
         contentValues.put("categoria", categoria);
         contentValues.put("lote", lote);
         contentValues.put("fecha_caducidad", fecha);
         contentValues.put("ubicacion", ubicacion);
-        contentValues.put("cantidad", cantidad); // <-- NUEVO
+        contentValues.put("cantidad", cantidad);
         long result = db.insert("products", null, contentValues);
         return result != -1;
     }
@@ -102,7 +105,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("lote", lote);
         contentValues.put("fecha_caducidad", fecha);
         contentValues.put("ubicacion", ubicacion);
-        contentValues.put("cantidad", cantidad); // <-- NUEVO
+        contentValues.put("cantidad", cantidad);
         long result = db.update("products", contentValues, "id=?", new String[]{String.valueOf(id)});
         return result > 0;
     }
@@ -113,8 +116,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    public Cursor getAllProducts() {
+    // Filtra los productos por userId
+    public Cursor getAllProducts(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM products", null);
+        return db.rawQuery("SELECT * FROM products WHERE user_id = ?", new String[]{String.valueOf(userId)});
     }
 }

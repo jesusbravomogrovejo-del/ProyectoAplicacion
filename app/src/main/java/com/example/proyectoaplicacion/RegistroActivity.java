@@ -1,5 +1,4 @@
 package com.example.proyectoaplicacion;
-
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,15 +19,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Calendar;
 
 public class RegistroActivity extends AppCompatActivity {
-
     EditText etNombre, etLote, etUbicacion, etFechaCaducidad, etCantidad;
     Spinner spinnerCategoria;
     SwitchCompat cbPerecedero;
     Button btnGuardar;
     DatabaseHelper db;
-
     int productoId = -1;
-
     private Handler disconnectHandler = new Handler();
     private Runnable disconnectCallback = new Runnable() {
         @Override
@@ -44,9 +40,7 @@ public class RegistroActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
-
         db = new DatabaseHelper(this);
-
         etNombre = findViewById(R.id.etNombre);
         spinnerCategoria = findViewById(R.id.spinnerCategoria);
         etLote = findViewById(R.id.etLote);
@@ -55,7 +49,6 @@ public class RegistroActivity extends AppCompatActivity {
         etCantidad = findViewById(R.id.etCantidad);
         cbPerecedero = findViewById(R.id.cbPerecedero);
         btnGuardar = findViewById(R.id.btnGuardar);
-
         resetDisconnectTimer();
 
         String[] opcionesCategorias = {"Abarrotes", "Lácteos", "Bebidas", "Limpieza", "Snacks", "Cuidado Personal", "Otros"};
@@ -66,21 +59,16 @@ public class RegistroActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.hasExtra("ID_PRODUCTO")) {
             productoId = intent.getIntExtra("ID_PRODUCTO", -1);
-
             etNombre.setText(intent.getStringExtra("NOMBRE"));
             etLote.setText(intent.getStringExtra("LOTE"));
             etUbicacion.setText(intent.getStringExtra("UBICACION"));
-
-            // PRE-LLENAR CANTIDAD
             int cantidadExtra = intent.getIntExtra("CANTIDAD", 0);
             etCantidad.setText(String.valueOf(cantidadExtra));
-
             String categoriaExtra = intent.getStringExtra("CATEGORIA");
             if (categoriaExtra != null) {
                 int spinnerPosition = adapter.getPosition(categoriaExtra);
                 spinnerCategoria.setSelection(spinnerPosition);
             }
-
             String fechaExtra = intent.getStringExtra("FECHA");
             if (fechaExtra != null && !fechaExtra.equals("00.00.0000")) {
                 cbPerecedero.setChecked(true);
@@ -91,7 +79,6 @@ public class RegistroActivity extends AppCompatActivity {
                 etFechaCaducidad.setText("00.00.0000");
                 etFechaCaducidad.setEnabled(false);
             }
-
             btnGuardar.setText("ACTUALIZAR REGISTRO");
         }
 
@@ -103,7 +90,6 @@ public class RegistroActivity extends AppCompatActivity {
                     int anio = calendario.get(Calendar.YEAR);
                     int mes = calendario.get(Calendar.MONTH);
                     int dia = calendario.get(Calendar.DAY_OF_MONTH);
-
                     DatePickerDialog datePickerDialog = new DatePickerDialog(RegistroActivity.this, new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -138,8 +124,6 @@ public class RegistroActivity extends AppCompatActivity {
                 String lote = etLote.getText().toString();
                 String ubicacion = etUbicacion.getText().toString();
                 String fecha = etFechaCaducidad.getText().toString();
-
-                // ATRAPAMOS LA CANTIDAD QUE ESCRIBIÓ EL USUARIO
                 String cantidadStr = etCantidad.getText().toString();
                 int cantidad = 0;
                 if (!cantidadStr.isEmpty()) {
@@ -149,15 +133,17 @@ public class RegistroActivity extends AppCompatActivity {
                         cantidad = 0;
                     }
                 }
-
                 if (nombre.isEmpty() || lote.isEmpty() || fecha.isEmpty()) {
                     Toast.makeText(RegistroActivity.this, "Nombre, Lote y Fecha son obligatorios", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (productoId == -1) {
-                    // PASAMOS LA CANTIDAD AL INSERTAR
-                    boolean isInserted = db.insertProduct(nombre, categoria, lote, fecha, ubicacion, cantidad);
+                    // Obtener el ID del usuario de la sesión para insertarlo con el producto
+                    android.content.SharedPreferences prefsSession = getSharedPreferences("MiniMarketPrefs", MODE_PRIVATE);
+                    int currentUserId = prefsSession.getInt("usuario_actual_id", -1);
+
+                    boolean isInserted = db.insertProduct(currentUserId, nombre, categoria, lote, fecha, ubicacion, cantidad);
                     if (isInserted) {
                         Toast.makeText(RegistroActivity.this, "Producto registrado", Toast.LENGTH_SHORT).show();
                         etNombre.setText("");
@@ -170,7 +156,6 @@ public class RegistroActivity extends AppCompatActivity {
                         Toast.makeText(RegistroActivity.this, "Error al registrar", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    // PASAMOS LA CANTIDAD AL ACTUALIZAR
                     boolean isUpdated = db.updateProduct(productoId, nombre, categoria, lote, fecha, ubicacion, cantidad);
                     if (isUpdated) {
                         Toast.makeText(RegistroActivity.this, "Producto actualizado con éxito", Toast.LENGTH_SHORT).show();
@@ -186,12 +171,10 @@ public class RegistroActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.nav_registrar);
-
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
-
                 if (id == R.id.nav_inicio) {
                     Intent intent = new Intent(RegistroActivity.this, DashboardActivity.class);
                     startActivity(intent);
